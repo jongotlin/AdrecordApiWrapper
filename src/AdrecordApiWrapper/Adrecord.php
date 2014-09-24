@@ -76,6 +76,37 @@ class Adrecord
     }
 
     /**
+     * @param Channel   $channel
+     * @param Program   $program
+     * @param \DateTime $from
+     * @param \DateTime $to
+     *
+     * @return Transaction[]
+     */
+    public function getTransactions(Channel $channel = null, Program $program = null, \DateTime $from = null, \DateTime $to = null)
+    {
+        $channelPart = '/' . ($channel ? $channel->getId() : 0);
+        $programPart = $program ? '/' . $program->getId() : '';
+        $querystring = [];
+        if ($from) {
+            $querystring['start'] = $from->format('Y-m-d');
+        }
+        if ($to) {
+            $querystring['stop'] = $to->format('Y-m-d');
+        }
+
+        $result = $this->load(
+            'https://api.adrecord.com/v1/transactions' . $channelPart . $programPart . '?' . http_build_query($querystring)
+        );
+
+        if (isset($result->message)) {
+            return [];
+        }
+
+        return $this->denormalizer->denormalizeTransactions($result->result);
+    }
+
+    /**
      * @param string $url
      * @throws Exception\AuthenticationException
      * @throws Exception\CommunicationException

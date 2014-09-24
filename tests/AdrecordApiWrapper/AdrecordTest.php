@@ -93,6 +93,63 @@ JSON;
         $this->assertEquals(43, $adrecord->getProgram(43)->getId());
     }
 
+    public function testReturnAListOfTransactions()
+    {
+        $json = <<<JSON
+{
+    "status": "OK",
+    "result": [
+        {
+            "id": 12345,
+            "type": "sale",
+            "click": "2012-12-06 09:56:03",
+            "epi": "topbanner",
+            "program": {
+                "id": 168,
+                "name": "Bubbleroom"
+            },
+            "channel": {
+                "id": 1,
+                "url": "http:\/\/www.example.com\/"
+            },
+            "orderID": "34622",
+            "orderValue": 29500,
+            "commission": 2950,
+            "commissionName": "Order",
+            "changes": [
+                {
+                    "type": "transaction registered",
+                    "date": "2012-12-06 10:03:12"
+                }
+            ],
+            "platform": "mac",
+            "status": 5
+        }
+    ]
+}
+JSON;
+        $adrecord = new Adrecord('foo', $this->getClientMock(200, $json));
+
+        $this->assertInternalType('array', $adrecord->getTransactions());
+        $this->assertEquals(12345, $adrecord->getTransactions()[0]->getId());
+    }
+
+
+    public function testReturnAListWithNoTransactions()
+    {
+        $json = <<<JSON
+{
+    "status": "OK",
+    "message": "no transactions found"
+}
+JSON;
+        $adrecord = new Adrecord('foo', $this->getClientMock(200, $json));
+
+        $this->assertInternalType('array', $adrecord->getTransactions());
+        $this->assertCount(0, $adrecord->getTransactions());
+
+    }
+
     /**
      * @expectedException AdrecordApiWrapper\Exception\CommunicationException
      */

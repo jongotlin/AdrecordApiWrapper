@@ -27,5 +27,14 @@ foreach ($adrecord->getPrograms() as $program) {
 $program = $adrecord->getProgram(43);
 echo sprintf('%d: %s (%s)%s', $program->getId(), $program->getName(), $program->getUrl(), PHP_EOL);
 //43: Blogvertiser (http://www.blogvertiser.com/sv/)
+
+$channel = new Channel();
+$channel->setId(4);
+$program = new Program();
+$program->setId(196);
+foreach ($adrecord->getTransactions($channel, $program, new DateTime('2014-09-01'), new DateTime('2014-09-10')) as $tx) {
+    echo date('Y-m-d', key($tx->getChanges())) . PHP_EOL;
+}
+//2014-09-01
 ```
 

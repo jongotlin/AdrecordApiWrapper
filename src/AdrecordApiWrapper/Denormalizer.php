@@ -64,4 +64,58 @@ class Denormalizer
 
         return $program;
     }
+
+    /**
+     * @param array $transactionsData
+     *
+     * @return Transaction[]
+     */
+    public function denormalizeTransactions(array $transactionsData)
+    {
+        $transactions = [];
+        foreach ($transactionsData as $transactionData) {
+            $transactions[] = $this->denormalizeTransaction($transactionData);
+        }
+
+        return $transactions;
+    }
+
+    /**
+     * @param \stdClass $transactionData
+     *
+     * @return Transaction
+     */
+    public function denormalizeTransaction(\stdClass $transactionData)
+    {
+        $transaction = new Transaction();
+        $transaction->setId($transactionData->id);
+        $transaction->setType($transactionData->type);
+        if ($transactionData->click) {
+            $transaction->setClickedAt(\DateTime::createFromFormat('Y-m-d H:i:s', $transactionData->click));
+        }
+        $transaction->setEpi($transactionData->epi);
+        $program = new Program();
+        $program->setId($transactionData->program->id);
+        $program->setName($transactionData->program->name);
+        $transaction->setProgram($program);
+        $channel = new Channel();
+        $channel->setId($transactionData->channel->id);
+        $channel->setUrl($transactionData->channel->url);
+        $transaction->setChannel($channel);
+        $transaction->setOrderId($transactionData->orderID);
+        $transaction->setOrderValue($transactionData->orderValue);
+        $transaction->setCommission($transactionData->commission);
+        $transaction->setCommissionName($transactionData->commissionName);
+
+        $changes = [];
+        foreach ($transactionData->changes as $data) {
+            $changes[\DateTime::createFromFormat('Y-m-d H:i:s', $data->date)->getTimestamp()] = $data->type;
+        }
+        $transaction->setChanges($changes);
+
+        $transaction->setPlatform($transactionData->platform);
+        $transaction->setStatus($transactionData->status);
+
+        return $transaction;
+    }
 }

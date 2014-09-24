@@ -126,4 +126,64 @@ class DenormalizerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Blogvertiser', $programs[0]->getName());
         $this->assertEquals('http://www.blogvertiser.com/sv/', $programs[0]->getUrl());
     }
+
+    public function testDenormalizeTransactions()
+    {
+        $json = '
+        {
+            "status": "OK",
+            "result": [
+                {
+                    "id": 12345,
+                    "type": "sale",
+                    "click": "2012-12-06 09:56:03",
+                    "epi": "topbanner",
+                    "program": {
+                        "id": 168,
+                        "name": "Bubbleroom"
+                    },
+                    "channel": {
+                        "id": 1,
+                        "url": "http:\/\/www.example.com\/"
+                    },
+                    "orderID": "34622",
+                    "orderValue": 29500,
+                    "commission": 2950,
+                    "commissionName": "Order",
+                    "changes": [
+                        {
+                            "type": "transaction registered",
+                            "date": "2012-12-06 10:03:12"
+                        }
+                    ],
+                    "platform": "mac",
+                    "status": 5
+                }
+            ]
+        }';
+
+        $transactionData = json_decode($json)->result;
+        $transactions = (new Denormalizer())->denormalizeTransactions($transactionData);
+
+        $this->assertInstanceOf('\AdrecordApiWrapper\Transaction', $transactions[0]);
+        $this->assertEquals(12345, $transactions[0]->getId());
+        $this->assertEquals('sale', $transactions[0]->getType());
+        $this->assertEquals(
+            \DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-06 09:56:03'),
+            $transactions[0]->getClickedAt()
+        );
+        $this->assertEquals('topbanner', $transactions[0]->getEpi());
+        $this->assertInstanceOf('\AdrecordApiWrapper\Program', $transactions[0]->getProgram());
+        $this->assertInstanceOf('\AdrecordApiWrapper\Channel', $transactions[0]->getChannel());
+        $this->assertEquals('34622', $transactions[0]->getOrderId());
+        $this->assertEquals(29500, $transactions[0]->getOrderValue());
+        $this->assertEquals(29500, $transactions[0]->getOrderValue());
+        $this->assertEquals(2950, $transactions[0]->getCommission());
+        $this->assertEquals('Order', $transactions[0]->getCommissionName());
+        $this->assertInternalType('array', $transactions[0]->getChanges());
+        $this->assertEquals('transaction registered', current($transactions[0]->getChanges()));
+        $this->assertEquals(1354784592, key($transactions[0]->getChanges()));
+        $this->assertEquals('mac', $transactions[0]->getPlatform());
+        $this->assertEquals(5, $transactions[0]->getStatus());
+    }
 }
