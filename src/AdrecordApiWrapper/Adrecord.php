@@ -44,7 +44,7 @@ class Adrecord
     }
 
     /**
-     * @param $id
+     * @param int $id
      *
      * @return Channel
      */
@@ -52,6 +52,26 @@ class Adrecord
     {
         return $this->denormalizer->denormalizeChannel(
             $this->load(sprintf('https://api.adrecord.com/v1/channels/%s', $id))->result
+        );
+    }
+
+    /**
+     * @return Program[]
+     */
+    public function getPrograms()
+    {
+        return $this->denormalizer->denormalizePrograms($this->load('https://api.adrecord.com/v1/programs')->result);
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Program
+     */
+    public function getProgram($id)
+    {
+        return $this->denormalizer->denormalizeProgram(
+            $this->load(sprintf('https://api.adrecord.com/v1/programs/%s', $id))->result
         );
     }
 

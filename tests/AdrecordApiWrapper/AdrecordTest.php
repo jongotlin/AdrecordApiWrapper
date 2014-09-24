@@ -50,6 +50,49 @@ JSON;
         $this->assertEquals(4, $adrecord->getChannel(4)->getId());
     }
 
+    public function testReturnsAListOfPrograms()
+    {
+        $json = <<<JSON
+{
+    "status": "OK",
+    "result": [
+        {
+            "id": "43",
+            "name": "Blogvertiser",
+            "url": "http:\/\/www.blogvertiser.com\/sv\/",
+            "category": "Blogging och social media"
+        }
+    ]
+}
+JSON;
+
+        $adrecord = new Adrecord('foo', $this->getClientMock(200, $json));
+
+        $this->assertInternalType('array', $adrecord->getPrograms());
+        $this->assertEquals(43, $adrecord->getPrograms()[0]->getId());
+    }
+
+    public function testReturnAProgram()
+    {
+        $json = <<<JSON
+{
+    "status": "OK",
+    "result": {
+        "id": 43,
+        "name": "Blogvertiser",
+        "url": "http:\/\/www.blogvertiser.com\/sv\/",
+        "description": "Blogvertiser...",
+        "category": "Blogging och social media"
+    }
+}
+JSON;
+
+        $adrecord = new Adrecord('foo', $this->getClientMock(200, $json));
+
+        $this->assertInstanceOf('AdrecordApiWrapper\Program', $adrecord->getProgram(43));
+        $this->assertEquals(43, $adrecord->getProgram(43)->getId());
+    }
+
     /**
      * @expectedException AdrecordApiWrapper\Exception\CommunicationException
      */

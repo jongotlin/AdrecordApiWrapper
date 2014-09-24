@@ -33,4 +33,35 @@ class Denormalizer
 
         return $channel;
     }
+
+    /**
+     * @param array $programsData
+     *
+     * @return Program[]
+     */
+    public function denormalizePrograms(array $programsData)
+    {
+        $programs = [];
+        foreach ($programsData as $programData) {
+            $programs[] = $this->denormalizeProgram($programData);
+        }
+
+        return $programs;
+    }
+
+    /**
+     * @param \stdClass $programData
+     *
+     * @return Program
+     */
+    public function denormalizeProgram(\stdClass $programData)
+    {
+        $program = new Program();
+        $program->setId($programData->id);
+        $program->setName($programData->name);
+        $program->setUrl($programData->url);
+        $program->setCategory($programData->category);
+
+        return $program;
+    }
 }
