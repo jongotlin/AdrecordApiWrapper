@@ -15,9 +15,17 @@ foreach ($adrecord->getChannels() as $channel) {
 }
 //4: Hittajulklappar (http://www.hittajulklappar.se)
 
-echo PHP_EOL;
-
 $channel = $adrecord->getChannel(4);
 echo sprintf('%d: %s (%s)%s', $channel->getId(), $channel->getName(), $channel->getUrl(), PHP_EOL);
 //4: Hittajulklappar (http://www.hittajulklappar.se)
+
+foreach ($adrecord->getPrograms() as $program) {
+    echo sprintf('%d: %s (%s)%s', $program->getId(), $program->getName(), $program->getUrl(), PHP_EOL);
+}
+//43: Blogvertiser (http://www.blogvertiser.com/sv/)
+
+$program = $adrecord->getProgram(43);
+echo sprintf('%d: %s (%s)%s', $program->getId(), $program->getName(), $program->getUrl(), PHP_EOL);
+//43: Blogvertiser (http://www.blogvertiser.com/sv/)
 ```
+
