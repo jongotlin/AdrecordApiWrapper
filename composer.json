@@ -1,10 +1,14 @@
 {
-    "name": "",
-    "description": "",
-    "keywords": ["adrecord"],
+    "name": "jongotlin/adrecord-api-wrapper",
+    "description": "Wrapper for Adrecord's api",
+    "keywords": ["adrecord", "affiliate"],
     "license": "MIT",
+    "homepage": "https://github.com/jongotlin/AdrecordApiWrapper",
     "authors": [
-        { "name": "Jon Gotlin", "email": "jon@jon.se" }
+        {
+            "name": "Jon Gotlin",
+            "email": "jon@jon.se"
+        }
     ],
     "require": {
         "php": ">=5.4",
