@@ -2,7 +2,10 @@
 
 namespace AdrecordApiWrapper;
 
-class Transaction
+use AdrecordApiWrapper\Enum\TransactionType;
+use AffiliateInterface\TransactionInterface;
+
+class Transaction implements TransactionInterface
 {
     /**
      * @var int
@@ -55,7 +58,7 @@ class Transaction
     protected $commissionName;
 
     /**
-     * @var array
+     * @var TransactionChange[]
      */
     protected $changes;
 
@@ -75,7 +78,7 @@ class Transaction
     }
 
     /**
-     * @param array $changes
+     * @param TransactionChange[] $changes
      */
     public function setChanges($changes)
     {
@@ -83,7 +86,7 @@ class Transaction
     }
 
     /**
-     * @return array
+     * @return TransactionChange[]
      */
     public function getChanges()
     {
@@ -187,6 +190,14 @@ class Transaction
     }
 
     /**
+     * @return int
+     */
+    public function getOriginalId()
+    {
+        return $this->getId();
+    }
+
+    /**
      * @param string $orderId
      */
     public function setOrderId($orderId)
@@ -282,7 +293,21 @@ class Transaction
         return $this->type;
     }
 
+    /**
+     * @return \DateTime
+     * 
+     * @throws \LogicException
+     */
+    public function getCreatedAt()
+    {
+        foreach ($this->getChanges() as $change) {
+            if (TransactionType::TRANSACTION_REGISTERED == $change->getType()) {
+                return $change->getCreatedAt();
+            }
+        }
 
+        throw new \LogicException('Could not find created at date');
+    }
 }
 
 

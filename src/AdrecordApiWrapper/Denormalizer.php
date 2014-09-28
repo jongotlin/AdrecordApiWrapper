@@ -109,7 +109,17 @@ class Denormalizer
 
         $changes = [];
         foreach ($transactionData->changes as $data) {
-            $changes[\DateTime::createFromFormat('Y-m-d H:i:s', $data->date)->getTimestamp()] = $data->type;
+            $transactionChange = new TransactionChange();
+            $transactionChange->setCreatedAt(\DateTime::createFromFormat('Y-m-d H:i:s', $data->date));
+            $transactionChange->setType($data->type);
+            if (isset($data->from)) {
+                $transactionChange->setFrom($data->from);
+            }
+            if (isset($data->to)) {
+                $transactionChange->setTo($data->to);
+            }
+
+            $changes[] = $transactionChange;
         }
         $transaction->setChanges($changes);
 

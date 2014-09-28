@@ -154,6 +154,12 @@ class DenormalizerTest extends PHPUnit_Framework_TestCase
                         {
                             "type": "transaction registered",
                             "date": "2012-12-06 10:03:12"
+                        },
+                        {
+                            "type": "changed status",
+                            "from": 2,
+                            "to": 1,
+                            "date": "2014-01-14 00:30:03"
                         }
                     ],
                     "platform": "mac",
@@ -181,8 +187,19 @@ class DenormalizerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(2950, $transactions[0]->getCommission());
         $this->assertEquals('Order', $transactions[0]->getCommissionName());
         $this->assertInternalType('array', $transactions[0]->getChanges());
-        $this->assertEquals('transaction registered', current($transactions[0]->getChanges()));
-        $this->assertEquals(1354784592, key($transactions[0]->getChanges()));
+        $this->assertCount(2, $transactions[0]->getChanges());
+
+        $changes = $transactions[0]->getChanges();
+        $this->assertEquals('transaction registered', current($changes)->getType());
+        $this->assertEquals('2012-12-06 10:03:12', current($changes)->getCreatedAt()->format('Y-m-d H:i:s'));
+        $this->assertNull(current($changes)->getFrom());
+        $this->assertNull(current($changes)->getTo());
+
+        $this->assertEquals('changed status', end($changes)->getType());
+        $this->assertEquals('2014-01-14 00:30:03', end($changes)->getCreatedAt()->format('Y-m-d H:i:s'));
+        $this->assertEquals(2, end($changes)->getFrom());
+        $this->assertEquals(1, end($changes)->getTo());
+
         $this->assertEquals('mac', $transactions[0]->getPlatform());
         $this->assertEquals(5, $transactions[0]->getStatus());
     }

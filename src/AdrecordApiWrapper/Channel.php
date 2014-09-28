@@ -2,7 +2,9 @@
 
 namespace AdrecordApiWrapper;
 
-class Channel
+use AffiliateInterface\ChannelInterface;
+
+class Channel implements ChannelInterface
 {
     /**
      * @var int
@@ -33,6 +35,14 @@ class Channel
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOriginalId()
+    {
+        return $this->getId();
     }
 
     /**

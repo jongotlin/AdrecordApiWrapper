@@ -2,7 +2,9 @@
 
 namespace AdrecordApiWrapper;
 
-class Program
+use AffiliateInterface\ProgramInterface;
+
+class Program implements ProgramInterface
 {
     /**
      * @var int
@@ -38,6 +40,14 @@ class Program
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOriginalId()
+    {
+        return $this->getId();
     }
 
     /**
