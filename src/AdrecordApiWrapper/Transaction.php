@@ -8,7 +8,7 @@ use AffiliateInterface\TransactionInterface;
 class Transaction implements TransactionInterface
 {
     /**
-     * @var int
+     * @var string
      */
     protected $id;
 
@@ -174,7 +174,7 @@ class Transaction implements TransactionInterface
     }
 
     /**
-     * @param int $id
+     * @param string $id
      */
     public function setId($id)
     {
@@ -182,7 +182,7 @@ class Transaction implements TransactionInterface
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getId()
     {
@@ -190,7 +190,7 @@ class Transaction implements TransactionInterface
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getOriginalId()
     {
